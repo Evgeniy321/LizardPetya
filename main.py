@@ -67,17 +67,6 @@ def new_message(message):
       bot.send_sticker(message.chat.id, choice(eat_steackers))
     elif message.chat.id != s.chanal_id:#первый комментарий к посту
       action(bot,message, attacks_action, hi_steackers)
-
-      actionCount = 10 #костыль, исправить 
-  # else:#если он поздаровался, но в коментариях идет бесседа 
-  #   if randint(0,actionCount+3) == 0:
-  #     action(bot,message, sleep_actions, sleepy_stickers)
-  #   elif actionCount > 5:
-  #     action(bot,message, sleep_actions_finaly, sleepy_stickers)
-  #     actionCount = -1
-  #   else:
-  #     actionCount += 1
-
       actionCount += 2
       bot.send_message(s.host_id, f'*Ты дурак, я тебя же предупреждаю* angry: {actionCount}')
     else:
