@@ -36,11 +36,19 @@ eat_steackers = ['CAACAgIAAxkBAAEBqVtlPvRAYu5ROO-LgCZW5JjhJtkBgQACgg4AAmdfgEl1Yz
                  'CAACAgIAAxkBAAEBqWFlPvSXwIsrc06sPPNLgxf3Xw1u3gACTQADv2adGE2tU0P-VNGzMAQ',
                  'CAACAgIAAxkBAAEBqWNlPvSprKe1vnXgUMOq3rgp6wY3BQACPwAD3U7yFffJ8Ga23MjqMAQ']
 
-sleepy_stickers = []
+sleepy_stickers = ['CAACAgQAAxkBAAEBrThlQE5PQWoz5XjfBEJRwbb6Y-mRRgACgAADzjkIDaLUfeB_ZKmUMAQ',
+                   'CAACAgQAAxkBAAEBrTplQE5VzF7ymrRYngjxGyLUF0aZuAACyQADzjkIDdrMNTXcY2sNMAQ',
+                   'CAACAgQAAxkBAAEBrTxlQE5cD9bND48h_yolzb0OOYwaPgAChgADzjkIDdgatd1t69jyMAQ',
+                   'CAACAgIAAxkBAAEBrT5lQE5012L08aDtAhQgWC57CqvflwACsAcAAlwCZQO_ytpL6_o6uzAE',
+                   'CAACAgIAAxkBAAEBrUBlQE6Q_EEDsZ3ERAT1__5-LREopQACmgADl_TGFGSHNRpyufmaMAQ']
 
 
 def action(bot, message,action_frase, sticker):
-  bot.send_sticker(message.chat.id, choice(sticker), reply_to_message_id=message.message_id)
+  try:
+    bot.send_sticker(message.chat.id, choice(sticker), reply_to_message_id=message.message_id)
+  except Exception as e:
+    bot.send_message(s.host_id, f'error {e}')
+
   bot.reply_to(message, choice(action_frase))
 
 @bot.message_handler(commands=['start'])
@@ -59,6 +67,7 @@ def new_message(message):
       bot.send_sticker(message.chat.id, choice(eat_steackers))
     elif message.chat.id != s.chanal_id:#первый комментарий к посту
       action(bot,message, attacks_action, hi_steackers)
+
       actionCount = 10 #костыль, исправить 
   # else:#если он поздаровался, но в коментариях идет бесседа 
   #   if randint(0,actionCount+3) == 0:
@@ -68,6 +77,24 @@ def new_message(message):
   #     actionCount = -1
   #   else:
   #     actionCount += 1
+
+      actionCount += 2
+      bot.send_message(s.host_id, f'*Ты дурак, я тебя же предупреждаю* angry: {actionCount}')
+    else:
+      actionCount+=1
+  elif actionCount == -100:
+    bot.send_message(s.host_id, f'*Ты дурак, я тебя же предупреждаю* angry: {actionCount}')
+  else:#если он поздаровался, но в коментариях идет бесседа 
+    if message.chat.id != s.chanal_id:
+      if randint(0,actionCount+3) == 0:
+        action(bot,message, sleep_actions, sleepy_stickers)
+        bot.send_message(s.host_id, f'*Ты дурак, я тебя же предупреждаю* angry: {actionCount}')
+      elif actionCount > 5:
+        action(bot,message, sleep_actions_finaly, sleepy_stickers)
+        actionCount = -100
+      else:
+        actionCount += 1
+
     
 
 
@@ -75,6 +102,9 @@ def new_message(message):
 def new_channel_message(message):
   global actionCount
   actionCount = 0
+
+  bot.send_message(s.host_id, actionCount)
+
   if message.chat.id != s.chanal_id:  # если бот в нескольких каналах, можно разделять действия по id
     bot.send_message(message.chat.id, '*Накоклился в лежаночке и спит*')
     print(message, ready)
