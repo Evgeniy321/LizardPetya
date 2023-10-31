@@ -3,6 +3,10 @@ from random import choice, randint
 import security as s
 from time import sleep
 from webserver import keep_alive
+import sys
+import os
+p = sys.executable
+
 
 ready = False
 actionCount = 0
@@ -53,8 +57,10 @@ def action(bot, message,action_frase, sticker):
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
+  global actionCount
+  actionCount = 0
   bot.send_message(message.chat.id, '*Вы входите в комнату Пети, он крепко спит*')
-  bot.send_message(message.chat.id, choice(sleep_actions_finaly))
+  bot.send_message(message.chat.id, choice(sleep_actions))
     #launch bot for chanal
 
 
@@ -90,13 +96,8 @@ def new_message(message):
 @bot.channel_post_handler()
 def new_channel_message(message):
   global actionCount
-  actionCount = 0
-
   bot.send_message(s.host_id, actionCount)
-
-  if message.chat.id != s.chanal_id:  # если бот в нескольких каналах, можно разделять действия по id
-    bot.send_message(message.chat.id, '*Накоклился в лежаночке и спит*')
-    print(message, ready)
+  os.execl(p, p, * sys.argv)
 
 
 
