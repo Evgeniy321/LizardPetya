@@ -55,6 +55,13 @@ def action(bot, message,action_frase, sticker):
 
   bot.reply_to(message, choice(action_frase))
 
+@bot.message_handler(commands=['happy'])
+def happy(message):
+  global actionCount
+  if message.chat.id == s.host_id:
+    actionCount = 0
+    bot.send_message(s.host_id, f'Happy stickers actionCount: {actionCount}')
+
 @bot.message_handler(commands=['start'])
 def start_message(message):
   global actionCount
